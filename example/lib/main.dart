@@ -39,8 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   void _initTBS() async {
     await FilePreview.resetInit();
-    isInit = false;
-    await FilePreview.initTBS();
+    isInit = await FilePreview.initTBS();
     if (mounted) {
       setState(() {});
     }
@@ -185,8 +184,7 @@ class _HomePageState extends State<HomePage> {
               textColor: Colors.white,
               child: const Text('本地文件预览'),
               onPressed: () async {
-                FilePickerResult? result =
-                    await FilePicker.platform.pickFiles();
+                FilePickerResult? result = await FilePicker.platform.pickFiles();
                 if (result != null) {
                   File file = File(result.files.single.path!);
                   Navigator.push(
@@ -204,16 +202,15 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             MaterialButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              child: const Text('清理本地缓存文件（android有效）'),
-              onPressed: () async {
-               var delete = await FilePreview.deleteCache();
-               if(delete){
-                 print("缓存文件清理成功");
-               }
-              }
-            ),
+                color: Colors.blue,
+                textColor: Colors.white,
+                child: const Text('清理本地缓存文件（android有效）'),
+                onPressed: () async {
+                  var delete = await FilePreview.deleteCache();
+                  if (delete) {
+                    print("缓存文件清理成功");
+                  }
+                }),
           ],
         ),
       ),
