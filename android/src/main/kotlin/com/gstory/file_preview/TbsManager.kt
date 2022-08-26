@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.TbsDownloader
 import com.tencent.smtt.sdk.TbsListener
 
 class TbsManager private constructor() {
@@ -41,19 +42,19 @@ class TbsManager private constructor() {
             override fun onViewInitFinished(arg0: Boolean) {
                 //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
                 Log.e("TBS内核", "onViewInitFinished:$arg0")
-                isInit = arg0
+                isInit = arg0 == true
                 if (arg0) {
                     callBack?.initFinish(true)
                     Log.e("TBS内核", "initFinish:$arg0,  QbSdk version:${QbSdk.getTbsVersion(app)}")
                 } else {
                     callBack?.initFinish(false)
+                    QbSdk.reset(app)
                     QbSdk.disableSensitiveApi()
                     val map: HashMap<String, Any> = HashMap()
                     map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
                     map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
                     QbSdk.initTbsSettings(map)
                     QbSdk.setDownloadWithoutWifi(true)
-                    QbSdk.reset(app)
                 }
             }
 
@@ -61,7 +62,6 @@ class TbsManager private constructor() {
                 Log.e("TBS内核", "onCoreInitFinished")
             }
         }
-        QbSdk.initX5Environment(app, callBack)
         QbSdk.setTbsListener(object : TbsListener {
             override fun onDownloadFinish(i: Int) {
                 //tbs内核下载完成回调
@@ -78,6 +78,8 @@ class TbsManager private constructor() {
                 Log.e("TBS内核", "下载进度 $i")
             }
         })
+        QbSdk.initX5Environment(app, callBack)
+
     }
 }
 

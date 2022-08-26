@@ -38,7 +38,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initTBS() async {
-    isInit = await FilePreview.initTBS();
+    await FilePreview.resetInit();
+    isInit = false;
+    await FilePreview.initTBS();
     if (mounted) {
       setState(() {});
     }
