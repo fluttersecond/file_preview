@@ -23,6 +23,7 @@ class TbsManager private constructor() {
             callBack?.initFinish(true)
             return
         }
+        TbsDownloader.stopDownload()
         //禁用隐私API的获取
         QbSdk.disableSensitiveApi()
         //BS内核首次使用和加载时，ART虚拟机会将Dex文件转为Oat，该过程由系统底层触发且耗时较长，很容易引起anr问题，解决方法是使用TBS的 ”dex2oat优化方案“。
