@@ -1,12 +1,10 @@
 package com.gstory.file_preview
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
 import com.tencent.smtt.sdk.TbsListener
-import java.util.HashMap
 
 class TbsManager private constructor() {
 
@@ -34,7 +32,7 @@ class TbsManager private constructor() {
         QbSdk.initTbsSettings(map)
         QbSdk.setDownloadWithoutWifi(true)
         //x5内核初始化接口
-        QbSdk.initX5Environment(app, object : QbSdk.PreInitCallback {
+        val callBack = object : QbSdk.PreInitCallback {
             /**
              * 预初始化结束
              * 由于X5内核体积较大，需要依赖网络动态下发，所以当内核不存在的时候，默认会回调false，此时将会使用系统内核代替
@@ -46,7 +44,7 @@ class TbsManager private constructor() {
                 isInit = arg0
                 if (arg0) {
                     callBack?.initFinish(true)
-                    Log.e("TBS内核", "initFinish:$arg0")
+                    Log.e("TBS内核", "initFinish:$arg0,  QbSdk version:${QbSdk.getTbsVersion(app)}")
                 } else {
                     callBack?.initFinish(false)
                     QbSdk.disableSensitiveApi()
@@ -62,11 +60,16 @@ class TbsManager private constructor() {
             override fun onCoreInitFinished() {
                 Log.e("TBS内核", "onCoreInitFinished")
             }
-        })
+        }
+        QbSdk.initX5Environment(app, callBack)
         QbSdk.setTbsListener(object : TbsListener {
             override fun onDownloadFinish(i: Int) {
                 //tbs内核下载完成回调
                 Log.e("TBS内核", "下载完成$i")
+                if (i == TbsListener.ErrorCode.NONEEDTODOWN_ERROR) {
+                    //重新初始化
+                    QbSdk.initX5Environment(app, callBack)
+                }
             }
 
             override fun onInstallFinish(i: Int) {
