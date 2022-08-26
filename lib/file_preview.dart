@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 part 'file_preview_widget.dart';
+
 part 'file_preview_callback.dart';
 
 class FilePreview {
@@ -18,6 +18,10 @@ class FilePreview {
 
   static Future<bool> tbsHasInit() async {
     return await _channel.invokeMethod('tbsHasInit');
+  }
+
+  static Future<bool> resetInit() async {
+    return await _channel.invokeMethod('resetInit');
   }
 
   static Future<bool> deleteCache() async {

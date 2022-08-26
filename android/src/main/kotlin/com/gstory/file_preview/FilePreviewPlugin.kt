@@ -74,8 +74,11 @@ class FilePreviewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
         } else if (call.method == "tbsHasInit") {
             result.success(TbsManager.instance.isInit)
+        } else if (call.method == "resetInit") {
+            TbsManager.instance.isInit = false
+            result.success(true)
         } else if (call.method == "deleteCache") {
-            FileUtils.deleteCache(mActivity!!,FileUtils.getDir(mActivity!!))
+            FileUtils.deleteCache(mActivity!!, FileUtils.getDir(mActivity!!))
             result.success(true)
         } else if (call.method == "tbsVersion") {
             result.success(QbSdk.getTbsVersion(applicationContext).toString())
