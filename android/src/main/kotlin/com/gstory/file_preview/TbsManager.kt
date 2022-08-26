@@ -66,10 +66,6 @@ class TbsManager private constructor() {
             override fun onDownloadFinish(i: Int) {
                 //tbs内核下载完成回调
                 Log.e("TBS内核", "下载完成$i")
-                if (i == TbsListener.ErrorCode.NONEEDTODOWN_ERROR) {
-                    //重新初始化
-                    QbSdk.initX5Environment(app, callBack)
-                }
             }
 
             override fun onInstallFinish(i: Int) {
